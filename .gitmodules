@@ -1,0 +1,3 @@
+[submodule "luabind/lua"]
+	path = luabind/lua
+	url = git@github.com:cn00/lua.git
