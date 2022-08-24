@@ -1,6 +1,5 @@
 package luabind
 
-
 /*
 #cgo CFLAGS: -std=gnu99
 //#cgo CFLAGS: -DHAVE_USLEEP=1
@@ -17,14 +16,16 @@ package luabind
 #include "lua/lua.c"
 */
 import "C"
-import "unsafe"
-
-var (
-	LUA_VERSION = C.LUA_VERSION
-	LUA_VERSION_NUM = C.LUA_VERSION_NUM
-	LUA_VERSION_RELEASE_NUM = C.LUA_VERSION_RELEASE_NUM
+import (
+	"os"
+	"unsafe"
 )
 
+var (
+	LUA_VERSION             = C.LUA_VERSION
+	LUA_VERSION_NUM         = C.LUA_VERSION_NUM
+	LUA_VERSION_RELEASE_NUM = C.LUA_VERSION_RELEASE_NUM
+)
 
 // Version returns SQLite library version information.
 func Version() (libVersion string, libVersionNumber, releaseNum int) {
@@ -40,11 +41,11 @@ func NewLuaState() (L *C.lua_State, err error) {
 	return
 }
 
-func LuaMain(){
-	args := [...]string{"lua"} //, "-e", "print('hello go-lua')"
+func LuaMain() {
+	args := os.Args // [...]string{"lua"} //, "-e", "print('hello go-lua')"
 	carg := make([]*C.char, 0)
 	for _, i := range args {
 		carg = append(carg, (*C.char)(unsafe.Pointer(C.CString(i))))
 	}
-	C.lua_main(C.int(len(args)), (**C.char)(unsafe.Pointer(&carg[0])))
+	C.lua_main(C.int(len(carg)), (**C.char)(unsafe.Pointer(&carg[0])))
 }
